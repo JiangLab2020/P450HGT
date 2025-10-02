@@ -64,7 +64,6 @@ class P450HGT(nn.Module):
 
     def forward(self, x):
         x = self.model(x)
-        # FIX: 不做 softmax，交叉熵内部会做 log_softmax
         return x
 
 # 创建网络模型
@@ -180,4 +179,5 @@ for i in range(epoch):
     print("模型已保存")
 
 writer.close()
+
 

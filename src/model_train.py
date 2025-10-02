@@ -22,7 +22,7 @@ class MyData(Dataset):
         seq_path = self.file_path + '/' + str(self.seq_path[index])
         encode_data = torch.load(seq_path)
         name = encode_data['label']
-        label = int(seq_path.split(".pt")[0][-1])  # 保持你的原写法
+        label = int(seq_path.split(".pt")[0][-1])
         encode_seq = encode_data['mean_representations'][33]
         return label, encode_seq
 
@@ -104,8 +104,8 @@ for i in range(epoch):
 
     pbar_train = tqdm(train_dataloader)
     for labels, encode_seqs in pbar_train:
-        labels = labels.to(device).long()             # FIX: 明确 long
-        encode_seqs = encode_seqs.to(device).float()  # 保守起见
+        labels = labels.to(device).long()          
+        encode_seqs = encode_seqs.to(device).float()  
 
         outputs = hgt(encode_seqs)
         loss = loss_fn(outputs, labels)
@@ -116,13 +116,13 @@ for i in range(epoch):
         optimizer.step()
 
         bs = labels.size(0)
-        total_train_loss += loss.item() * bs          # FIX
+        total_train_loss += loss.item() * bs        
         total_train_samples += bs
 
         y_true_train.extend(labels.tolist())
         y_pred_train.extend(outputs.argmax(dim=1).tolist())
 
-    train_avg_loss = total_train_loss / max(1, total_train_samples)  # FIX
+    train_avg_loss = total_train_loss / max(1, total_train_samples)
     train_acc = accuracy_score(y_true_train, y_pred_train)
     train_pre = precision_score(y_true_train, y_pred_train, average='weighted', zero_division=0)
     train_rec = recall_score(y_true_train, y_pred_train, average='weighted', zero_division=0)
@@ -175,8 +175,9 @@ for i in range(epoch):
         writer.add_scalar("test_f1", test_f1, total_test_step)
         total_test_step = total_test_step + 1
 
-    # 保存整个模型对象（保持你的原习惯）
+    # 保存整个模型对象
     torch.save(hgt, "model_pt_files_weighted/{}.pt".format(i))
     print("模型已保存")
 
 writer.close()
+
